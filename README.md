@@ -9,8 +9,6 @@ which cows, how many litres each cause costs, and what to do today, this week an
 
 Built solo for the Reva hackathon, problem statement **Multi-Agent AI for Livestock Farm Decision Support**.
 
-![PashuPlan in Kannada on a phone: 727 litres a day, 14% down, then the causes with the cows shown as yellow ear tags](docs/dashboard.jpg)
-
 ## The problem
 
 A drop in milk is a symptom, and on a real farm it rarely has one cause. A farmer has to tell
