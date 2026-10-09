@@ -1,0 +1,6 @@
+pandas
+numpy
+anthropic
+streamlit
+plotly
+pytest
