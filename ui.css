@@ -1,0 +1,215 @@
+/* Inter is loaded only for the glyphs the page uses (wordmark and numerals); Mukta covers Latin and Hindi, Noto Sans Kannada covers Kannada. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@900&text=PashuPlan0123456789%2C.%25%E2%82%B9&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&family=Noto+Sans+Kannada:wght@400;600;900&display=swap");
+
+:root {
+  --color-forest-ink: #163300;
+  --color-lime-voltage: #9fe870;
+  --color-spruce: #054d28;
+  --color-linen-mist: #e2f6d5;
+  --color-alarm-red: #cb272f;
+  --color-charcoal: #454745;
+  --color-obsidian: #0e0f0c;
+  --color-pebble: #868685;
+  --color-fog: #e8ebe6;
+  --color-paper: #ffffff;
+  --font-body: "Mukta", "Noto Sans Kannada", "Nirmala UI", "Segoe UI", sans-serif;
+  --font-numeral: "Inter", "Mukta", "Segoe UI", sans-serif;
+}
+
+/* Streamlit page: fog canvas, no Streamlit chrome */
+.stApp, [data-testid="stAppViewContainer"] { background: var(--color-fog); }
+[data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"], footer { display: none !important; }
+.block-container { max-width: 640px !important; padding: 14px 16px 64px !important; }
+
+/* Language switch: a pill holding three options, the active one in lime */
+[data-testid="stElementContainer"]:has([data-testid="stRadio"]), [data-testid="stRadio"] { width: 100% !important; }
+[data-testid="stRadioGroup"] {
+  display: flex; flex-wrap: nowrap; gap: 4px; width: 100%; padding: 4px;
+  background: var(--color-paper); border: 1px solid var(--color-pebble); border-radius: 9999px;
+}
+[data-testid="stRadioGroup"] > div { flex: 1; }
+[data-testid="stRadioOption"] {
+  display: flex; justify-content: center; align-items: center; width: 100%; min-height: 48px; margin: 0;
+  border-radius: 9999px; background: transparent; cursor: pointer; transition: transform 0.12s;
+}
+[data-testid="stRadioOption"] > div > div:first-child { display: none; }
+[data-testid="stRadioOption"] p { margin: 0; color: var(--color-charcoal); font: 700 18px/1 var(--font-body); }
+[data-testid="stRadioOption"][data-selected="true"] { background: var(--color-lime-voltage); }
+[data-testid="stRadioOption"][data-selected="true"] p { color: var(--color-forest-ink); }
+[data-testid="stRadioOption"]:active { transform: scale(0.97); }
+[data-testid="stRadioOption"]:has(input:focus-visible) { outline: 3px solid var(--color-forest-ink); outline-offset: 2px; }
+
+/* Primary action: a lime pill */
+.stButton button {
+  width: 100%; min-height: 56px; border: 0; border-radius: 9999px; margin-top: 12px;
+  background: var(--color-lime-voltage); color: var(--color-forest-ink);
+  font: 800 20px/1.2 var(--font-body); transition: transform 0.12s;
+}
+/* A button with hover help sits inside a wrapper that Streamlit hides on narrow screens: keep it shown */
+.stButton :has(> .stTooltipIcon) { display: block !important; }
+[data-testid="stElementContainer"]:has(.stButton), .stButton { width: 100% !important; }
+.stButton .stTooltipHoverTarget { justify-content: flex-start !important; }
+.stButton button:hover { background: var(--color-linen-mist); color: var(--color-forest-ink); }
+.stButton button:active { transform: scale(0.98); }
+/* Off: not lime (lime means active), an outline instead, and a cursor that says "not available" */
+.stButton button:disabled {
+  background: var(--color-paper); color: var(--color-charcoal); border: 2px dashed var(--color-pebble);
+  cursor: not-allowed; transform: none;
+}
+
+.pp { font: 400 18px/1.55 var(--font-body); color: var(--color-charcoal); }
+.pp p { margin: 0; }
+.pp h1, .pp h2, .pp h3 { margin: 0; color: var(--color-forest-ink); font-family: var(--font-body); text-wrap: balance; }
+.pp h1 { font-size: clamp(30px, 9.5vw, 44px); font-weight: 800; line-height: 1.12; }
+.pp h2 { font-size: 26px; font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+.pp h3 { font-size: 21px; font-weight: 800; line-height: 1.25; margin-bottom: 4px; }
+.pp[lang="en"] h1 { letter-spacing: -0.03em; }
+.pp[lang="en"] h2, .pp[lang="en"] h3 { letter-spacing: -0.015em; }
+
+/* Pills and cards */
+.pill {
+  display: inline-block; padding: 6px 16px; border-radius: 9999px;
+  background: var(--color-linen-mist); color: var(--color-forest-ink); font-weight: 700; font-size: 16px;
+}
+.card { border-radius: 28px; padding: 28px 20px; margin-top: 16px; }
+.card.linen { background: var(--color-linen-mist); }
+.card.paper { background: var(--color-paper); }
+.card.dark { background: var(--color-forest-ink); color: var(--color-paper); }
+.card.dark h2 { color: var(--color-lime-voltage); }
+
+/* Header and hero */
+.top { display: flex; justify-content: space-between; align-items: center; padding: 18px 4px 8px; }
+.mark { font: 900 28px/1 var(--font-numeral); color: var(--color-forest-ink); letter-spacing: -0.04em; }
+.hero { padding: 12px 4px 20px; }
+.hero h1 { margin-top: 12px; }
+.big { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+.num {
+  font: 900 clamp(112px, 38vw, 168px)/0.85 var(--font-numeral); color: var(--color-obsidian);
+  letter-spacing: -0.04em;
+}
+.unit { font-size: 22px; font-weight: 600; color: var(--color-forest-ink); }
+/* A sentence that can wrap onto several lines, so a rounded rectangle instead of a full pill */
+.delta { display: block; margin-top: 16px; padding: 12px 20px; border-radius: 24px; background: var(--color-alarm-red); color: var(--color-paper); font-size: 19px; font-weight: 700; }
+
+/* Causes */
+.cause {
+  background: var(--color-paper); border-radius: 10px; padding: 16px 16px 16px 18px; margin-top: 12px;
+  border-left: 6px solid var(--color-alarm-red);
+}
+.cause.fine { border-left-color: var(--color-spruce); }
+.cause.watch { border-left: 6px double var(--color-forest-ink); }
+.cost { font-weight: 800; color: var(--color-forest-ink); margin-top: 4px; }
+
+/* Cows as ear tags */
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 18px 6px 14px;
+  background: var(--color-forest-ink); color: var(--color-lime-voltage); border-radius: 9999px;
+}
+.tag::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--color-lime-voltage); }
+.eartag-text { display: flex; flex-direction: column; line-height: 1.15; }
+.eartag-text b { font-weight: 800; font-size: 20px; }
+.eartag-text small { font-weight: 600; font-size: 15px; color: var(--color-linen-mist); }
+
+/* Steps */
+.actions { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+.act { counter-increment: step; position: relative; padding: 18px 0 18px 56px; border-top: 1px solid var(--color-pebble); }
+.act:first-child { border-top: 0; padding-top: 4px; }
+.act::before { content: counter(step); position: absolute; left: 0; top: 14px; font: 900 38px/1 var(--font-numeral); color: var(--color-forest-ink); }
+.act:first-child::before { top: 0; }
+.when { display: inline-block; padding: 4px 14px; margin-bottom: 8px; border-radius: 9999px; font-weight: 800; font-size: 14px; letter-spacing: 0.04em; }
+.when.today { background: var(--color-forest-ink); color: var(--color-lime-voltage); }
+.when.week { border: 2px solid var(--color-forest-ink); color: var(--color-forest-ink); }
+.when.later { background: var(--color-linen-mist); color: var(--color-forest-ink); }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.meta .when, .meta .agent { margin-bottom: 0; }
+
+/* The advisor whose data a block comes from, named above the block */
+.agent { display: inline-block; margin-bottom: 8px; padding: 3px 12px; border-radius: 9999px; background: var(--color-linen-mist); color: var(--color-forest-ink); font-size: 14px; font-weight: 800; line-height: 1.3; }
+.dark .agent { background: transparent; border: 1px solid var(--color-lime-voltage); color: var(--color-lime-voltage); }
+
+/* Advisor plan */
+.plan { font-size: 20px; margin: 0 0 14px; white-space: pre-line; color: var(--color-charcoal); }
+.looked { list-style: none; padding: 0; margin: 18px 0 0; font-size: 16px; color: var(--color-charcoal); }
+.looked li { padding: 4px 0; border-top: 1px solid var(--color-pebble); }
+.looked b { color: var(--color-forest-ink); }
+.said summary { cursor: pointer; min-height: 44px; display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
+.said-text { margin: 4px 0 10px; font-size: 16px; white-space: pre-line; overflow-wrap: anywhere; }
+.tech { margin-top: 12px; font-size: 14px; color: var(--color-charcoal); overflow-wrap: anywhere; }
+.tech summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 800; }
+
+/* Money and chart, on the dark card */
+.fig { margin: 0 0 20px; color: var(--color-paper); }
+.amt { display: block; font: 900 clamp(40px, 12vw, 56px)/1.1 var(--font-numeral); letter-spacing: -0.03em; }
+.dark .amt { color: var(--color-lime-voltage); }
+.chart { margin-top: 32px; }
+.bars { display: flex; align-items: flex-end; gap: 4px; height: 130px; border-bottom: 2px solid var(--color-paper); }
+.bar { flex: 1; display: block; transform-origin: bottom; }
+.bar.prior { background: var(--color-pebble); }
+.bar.this { background: var(--color-lime-voltage); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 12px; color: var(--color-paper); }
+.legend b { display: block; font-size: 22px; }
+.sw { display: inline-block; width: 14px; height: 14px; margin-right: 8px; border-radius: 9999px; }
+.sw.prior { background: var(--color-pebble); }
+.sw.this { background: var(--color-lime-voltage); }
+
+.note { font-size: 16px; color: var(--color-charcoal); padding: 20px 4px 0; }
+
+/* Kannada is tall: spots that are tight for Latin text get roomier lines and gaps so nothing touches */
+.pp[lang="kn"] { line-height: 1.7; }
+.pp[lang="kn"] h1, .pp[lang="kn"] h2 { font-family: "Noto Sans Kannada", "Nirmala UI", sans-serif; font-weight: 900; line-height: 1.4; }
+.pp[lang="kn"] h3, .pp[lang="kn"] .when, .pp[lang="kn"] .agent, .pp[lang="kn"] .pill { font-family: "Noto Sans Kannada", "Nirmala UI", sans-serif; font-weight: 800; line-height: 1.4; }
+.pp[lang="kn"] .eartag-text { line-height: 1.55; }
+.pp[lang="kn"] .tag { padding-top: 6px; padding-bottom: 6px; }
+.pp[lang="kn"] .fig span { line-height: 1.6; }
+.pp[lang="kn"] .fig .amt { line-height: 1.15; margin-bottom: 8px; }
+.pp[lang="kn"] .fig { margin-bottom: 26px; }
+.pp[lang="kn"] .unit { margin-top: 12px; }
+.pp[lang="kn"] .legend b { line-height: 1.6; }
+.pp[lang="kn"] .looked li { line-height: 1.7; padding: 6px 0; }
+
+:focus-visible { outline: 3px solid var(--color-forest-ink); outline-offset: 2px; }
+.dark :focus-visible { outline-color: var(--color-lime-voltage); }
+
+/* Motion: transform and opacity only, never more than 0.8s, no JavaScript */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes pop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: none; } }
+
+.top, .hero > * { animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; animation-delay: calc(var(--d, 0) * 70ms); }
+.hero > :nth-child(1) { --d: 1; }
+.hero > :nth-child(2) { --d: 2; }
+.hero > :nth-child(3) { --d: 3; }
+.hero > :nth-child(4) { --d: 4; }
+.hero > :nth-child(5) { --d: 5; }
+.bar { animation: grow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; animation-delay: calc(var(--i, 0) * 30ms); }
+
+/* Where the browser supports scroll-driven animation, cards, tags and bars play as they scroll into view */
+@supports (animation-timeline: view()) {
+  .card { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 35%; }
+  .tag { animation: pop linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+  .bar { animation: grow linear both; animation-delay: 0s; animation-timeline: view(); animation-range: entry 10% entry 70%; }
+}
+
+/* Tablet: a wider single column. Desktop: two columns, the answer and the money on the left, the advice, causes and steps on the right. */
+@media (min-width: 700px) { .num { font-size: 168px; } .block-container { max-width: 760px !important; } }
+@media (min-width: 960px) {
+  .block-container { max-width: 1180px !important; padding: 24px 40px 72px !important; }
+  [data-testid="stRadioGroup"], .stButton button { max-width: 420px; }
+  .pp { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto auto 1fr; column-gap: 32px; align-items: start; }
+  .pp > .top, .pp > .note { grid-column: 1 / -1; }
+  .pp > .hero { grid-column: 1; grid-row: 2; }
+  .pp > .card.dark { grid-column: 1; grid-row: 3; }
+  .main-col { grid-column: 2; grid-row: 2 / span 2; }
+  .main-col > .card:first-child { margin-top: 16px; }
+  .pp h1 { font-size: 48px; }
+}
+/* Wide desktop: three columns. Causes and steps sit side by side, so the left column is not left empty. */
+@media (min-width: 1200px) {
+  .block-container { max-width: 1320px !important; }
+  .pp { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .main-col { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; align-items: start; }
+  .main-col > .advisors { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
