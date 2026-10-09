@@ -9,8 +9,6 @@ prioritised action plan.
 
 Built solo for the Reva hackathon, problem statement **Multi-Agent AI for Livestock Farm Decision Support**.
 
-![PashuPlan dashboard: herd milk falls 14.3% in a week, with the feed change and heat wave marked, three mastitis suspects and the top declining cows](docs/dashboard.jpg)
-
 ## The problem
 
 A drop in milk is a symptom, and on a real farm it rarely has one cause. A farmer looking at
