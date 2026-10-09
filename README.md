@@ -9,6 +9,8 @@ which cows, how many litres each cause costs, and what to do today, this week an
 
 Built solo for the Reva hackathon, problem statement **Multi-Agent AI for Livestock Farm Decision Support**.
 
+![PashuPlan in Kannada on a phone: 727 litres a day, 14% down, then the causes with the cows shown as yellow ear tags](docs/dashboard.jpg)
+
 ## The problem
 
 A drop in milk is a symptom, and on a real farm it rarely has one cause. A farmer has to tell
@@ -82,18 +84,23 @@ flowchart LR
     M --> P["One prioritised plan"]
 ```
 
-- **Agents investigate with tools.** Each specialist runs a tool-use loop and chooses what to
-  look at, such as `get_cow_detail("C16")` or `get_mastitis_risk`, then reads the result.
+- **Compact by default: 6 requests per run.** Our code runs each advisor's data tools and gives
+  the results to the model in one message, so each advisor costs one request (five specialists plus
+  the manager). That is about 18,000 characters sent per run instead of 41,000, which is what makes
+  a free key usable. Set `PASHUPLAN_MODE=agentic` (or `--mode agentic`) for the full tool-use loop,
+  where each specialist chooses its own tools, such as `get_cow_detail("C16")` or
+  `get_mastitis_risk`, and reads the results. That mode takes 11 or more requests.
 - **The model never does the maths.** Every number comes from tested functions or the trained
   models. The language model decides what to look at and explains it.
-- **Guardrails.** Per-agent tool allowlists, a cap of 6 tool turns (then a forced answer), tool
-  errors returned to the model instead of crashing, five advisors run in parallel, and one
-  failing advisor never stops the rest.
+- **Guardrails.** Per-agent tool allowlists, a cap of 6 tool turns in agentic mode (then a forced
+  answer), tool errors returned to the model instead of crashing, a cap on how many advisors call
+  the model at once, and one failing advisor never stops the rest.
 - **Offline demo.** The last advisor answer is saved and shown with its date when there is no
   key or network.
 
 The on-screen report (causes, actions, money, chart) is built from the analytics and models and
-works without an API key. The advisor plan appears when `ANTHROPIC_API_KEY` is set.
+works without any key or internet. The advisor plan appears when an AI provider is set up (see
+"Choosing the AI provider" below), and the last answer in each language is saved (replay/advisors_<language>.json) so it can be shown offline. Advice is never shown in a language other than the one it was written in.
 
 ## Status
 
@@ -101,12 +108,13 @@ works without an API key. The advisor plan appears when `ANTHROPIC_API_KEY` is s
 |---|---|
 | Domain model, seeded simulator with planted causes, analytics (9 fact functions) | Done |
 | Loss-attribution and mastitis early-warning models, trained and shipped in `models/` | Done |
-| Tool registry (11 tools, per-agent allowlists), agent loop, parallel orchestrator | Done, tested with a scripted fake client |
+| Tool registry (11 tools, per-agent allowlists), compact mode (6 requests) and agentic tool loop, orchestrator | Done. Agentic mode has run live on Gemini. Compact mode has not been run live yet. Both are covered by fake-client tests. |
 | Phone-first screen in Kannada, Hindi and English | Done |
-| First live run against the Anthropic API | Not yet done: needs your API key |
+| Provider choice: Google Gemini (free tier), Anthropic, or any OpenAI-compatible server such as Ollama | Done, tested against fakes and a local server |
+| First live run against a real model | Not yet done: needs a key |
 | Real farm data | Not used: everything is simulated |
 
-The project has **192 tests**, written test-first.
+The project has **287 tests**, written test-first.
 
 ## Quick start
 
@@ -118,9 +126,34 @@ streamlit run app.py
 
 ```bash
 python -m pashuplan.train        # retrain both models and print held-out metrics
-python -m pashuplan.ask          # ask the advisors (needs ANTHROPIC_API_KEY)
+python -m pashuplan.ask          # ask the advisors (needs an AI provider, see below)
 python -m pashuplan.ask --lang hi --question "इस हफ्ते दूध कम क्यों हुआ?"
 ```
+
+## Choosing the AI provider
+
+The advisors need a language model. Pick one with environment variables, set in your own
+terminal and never saved in a file:
+
+| Provider | Set | Cost |
+|---|---|---|
+| Google Gemini | `GEMINI_API_KEY` (key from aistudio.google.com) | Free tier, with rate limits |
+| Anthropic Claude | `ANTHROPIC_API_KEY` | Paid |
+| Any OpenAI-compatible server (Ollama, Groq, OpenRouter) | `PASHUPLAN_BASE_URL` and `PASHUPLAN_MODEL`, optional `PASHUPLAN_API_KEY` | Depends on the server |
+
+```powershell
+$env:GEMINI_API_KEY = "paste-your-key-here"
+python -m pashuplan.ask
+```
+
+If several are set, Anthropic wins unless you set `PASHUPLAN_PROVIDER` to `gemini`, `anthropic` or
+`openai`. `PASHUPLAN_MODEL` changes the model and `PASHUPLAN_MAX_PARALLEL` changes how many
+advisors call the model at once. Gemini defaults to `gemini-3.8-flash` and one advisor at a time, because free
+tiers allow only a few requests a minute, and rate-limit errors are retried after the wait Google asks for (a daily limit is reported, not retried). A run where any advisor failed is shown but never saved as the offline answer. If the
+free limit is still too tight, try `PASHUPLAN_MODEL=gemini-3.5-flash-lite`.
+
+Google states that content sent on the free Gemini plan may be used to improve its products. That is
+fine for this simulated farm, but do not send real farm records through a free key.
 
 ## Project layout
 
@@ -135,6 +168,8 @@ pashuplan/
   models.py        Train, evaluate, save and load both models
   tools.py         Tool schemas, per-agent allowlists, run_tool() that never raises
   agents.py        One advisor's tool-use loop
+  llm.py           Client for OpenAI-compatible endpoints (Gemini, Groq, Ollama), no extra dependencies
+  providers.py     Picks the AI provider from environment variables
   orchestrator.py  Five advisors in parallel, then the Farm Manager
   report.py        Facts to a plain-language report (causes, actions, money)
   render.py        Report to HTML in Kannada, Hindi or English
@@ -144,7 +179,7 @@ pashuplan/
   train.py, ask.py Command line entry points
 app.py             Streamlit app
 models/            Trained model files and metrics.json
-tests/             192 tests
+tests/             287 tests
 ```
 
 ## A note on the data
@@ -155,4 +190,4 @@ checked against a known ground truth.
 
 ## Tech
 
-Python, pandas, NumPy, Streamlit, the Anthropic API, pytest.
+Python, pandas, NumPy, Streamlit, pytest, and your choice of the Google Gemini API, the Anthropic API or a local model.
